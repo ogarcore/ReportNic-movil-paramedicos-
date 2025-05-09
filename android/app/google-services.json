@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "243381277021",
+    "project_id": "reportnic-9942b",
+    "storage_bucket": "reportnic-9942b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243381277021:android:4c4890b32d7c73d60f58b4",
+        "android_client_info": {
+          "package_name": "com.example.rptn_01"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_cliPXxxblnuJLPFXj5bheIZZY86tSXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

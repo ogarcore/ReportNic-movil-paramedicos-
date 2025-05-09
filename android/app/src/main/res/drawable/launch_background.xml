@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Fondo azul -->
+    <item android:drawable="@color/blue_800" />
+
+    <!-- Logo centrado y reducido -->
+    <item>
+        <inset
+            android:insetLeft="50dp"
+            android:insetTop="50dp"
+            android:insetRight="50dp"
+            android:insetBottom="200dp">
+            <bitmap
+                android:gravity="center"
+                android:src="@drawable/logo_blanco"
+                android:tileMode="disabled" />
+        </inset>
+    </item>
+
+</layer-list>
