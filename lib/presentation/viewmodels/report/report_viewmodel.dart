@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rptn_01/presentation/views/splash/splash_view.dart';
 
-class HomeViewModel {
+class ReportViewModel {
   // 🔐 Función para cerrar sesión
   Future<void> cerrarSesion(BuildContext context) async {
     try {

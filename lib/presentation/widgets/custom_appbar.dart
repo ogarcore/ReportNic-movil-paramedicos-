@@ -1,37 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String logoPath;
-  final bool automaticallyImplyLeading;
 
-  const CustomHeader({
+  const CustomAppBar({
     Key? key,
     required this.title,
-    this.automaticallyImplyLeading = false, required this.logoPath,
+    required this.logoPath,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: automaticallyImplyLeading,
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(1),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  logoPath,
-                  width: 100,
-                  height: 60,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          ),
           Text(
             title,
             style: const TextStyle(
@@ -39,6 +23,34 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white,
               fontSize: 26,
               letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 13, 106, 168).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: const Color.fromARGB(
+                  255,
+                  135,
+                  128,
+                  231,
+                ).withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  logoPath,
+                  width: 40,
+                  height: 20,
+                  color: Colors.white,
+                ),
+              ],
             ),
           ),
         ],
@@ -51,7 +63,7 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color.fromARGB(255, 24, 74, 148), Color.fromARGB(255, 36, 124, 212)],
+            colors: [Color(0xFF0D47A1), Color(0xFF1976D2)],
           ),
           boxShadow: [
             BoxShadow(
@@ -62,18 +74,18 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
             ),
           ],
           borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(40),
+            bottom: Radius.circular(30),
           ),
         ),
       ),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
-      toolbarHeight: 100,
+      toolbarHeight: 90,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(125);
+  Size get preferredSize => const Size.fromHeight(90);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../viewmodels/register/register_viewmodel.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/custom_header.dart';
@@ -28,139 +29,214 @@ class _RegisterViewState extends State<RegisterView> {
         final shouldPop = await showDialog<bool>(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: Text('¿Deseas salir del registro?'),
-              content: Text('Se perderán todos los datos que hayas ingresado.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text('Cancelar'),
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 16,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
                 ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text('Aceptar'),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      HugeIcons.strokeRoundedAlert02,
+                      size: 60,
+                      color: Colors.orange[700],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '¿Deseas salir del registro?',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Se perderán todos los datos que hayas ingresado.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[500],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            FocusScope.of(context).unfocus();
+                          },
+                          child: const Text(
+                            'Cancelar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[700],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text(
+                            'Aceptar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         );
         return shouldPop ?? false;
       },
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.08),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                CustomHeader(),
-                const SizedBox(height: 30),
-                Text(
-                  'Registro',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.blue[800],
-                    letterSpacing: 0.5,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); 
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey[50],
+          appBar: const CustomHeader(
+            title: 'ReportNic',
+            logoPath: 'assets/images/logo_blanco.png',
+            automaticallyImplyLeading: false,
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 30),
+                  Text(
+                    'Registro',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.blue[800],
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                _buildField(
-                  label: 'Nombre',
-                  controller: _viewModel.nombreController,
-                  icon: Icons.person,
-                  hint: 'Ingrese su nombre',
-                  errorListenable: _viewModel.nombreError,
-                ),
-                _buildField(
-                  label: 'Apellido',
-                  controller: _viewModel.apellidoController,
-                  icon: Icons.person_outline,
-                  hint: 'Ingrese su apellido',
-                  errorListenable: _viewModel.apellidoError,
-                ),
-                _buildField(
-                  label: 'Cédula de Identidad',
-                  controller: _viewModel.cedulaController,
-                  icon: Icons.badge,
-                  hint: 'Ingrese su número de cédula',
-                  errorListenable: _viewModel.cedulaError,
-                  inputType: TextInputType.visiblePassword,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(17),
-                    CedulaInputFormatter(),
-                  ],
-                ),
-                _buildField(
-                  label: 'Correo electrónico',
-                  controller: _viewModel.emailController,
-                  icon: Icons.email,
-                  hint: 'Ingrese su correo',
-                  errorListenable: _viewModel.emailError,
-                  inputType: TextInputType.emailAddress,
-                ),
-                _buildField(
-                  label: 'Contraseña',
-                  controller: _viewModel.passwordController,
-                  icon: Icons.lock,
-                  hint: 'Ingrese su contraseña',
-                  errorListenable: _viewModel.passwordError,
-                  isPassword: true,
-                  obscureText: _obscurePassword,
-                  toggleVisibility: () {
-                    setState(() => _obscurePassword = !_obscurePassword);
-                  },
-                ),
-                const SizedBox(height: 20),
-                ValueListenableBuilder<String?>(
-                  valueListenable: _viewModel.errorMessage,
-                  builder: (_, message, __) {
-                    if (message == null) return const SizedBox.shrink();
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        message,
-                        style: TextStyle(color: Colors.red[700], fontSize: 13),
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  },
-                ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _viewModel.isLoading,
-                  builder: (_, isLoading, __) {
-                    return ElevatedButton(
-                      onPressed:
-                          isLoading ? null : () => _viewModel.register(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[700],
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  const SizedBox(height: 30),
+                  _buildField(
+                    label: 'Nombre',
+                    controller: _viewModel.nombreController,
+                    icon: Icons.person,
+                    hint: 'Ingrese su nombre',
+                    errorListenable: _viewModel.nombreError,
+                    inputType: TextInputType.name,
+                  ),
+                  _buildField(
+                    label: 'Apellido',
+                    controller: _viewModel.apellidoController,
+                    icon: Icons.person_outline,
+                    hint: 'Ingrese su apellido',
+                    errorListenable: _viewModel.apellidoError,
+                    inputType: TextInputType.name,
+                  ),
+                  _buildField(
+                    label: 'Cédula de Identidad',
+                    controller: _viewModel.cedulaController,
+                    icon: Icons.badge,
+                    hint: 'Ingrese su número de cédula',
+                    errorListenable: _viewModel.cedulaError,
+                    inputType: TextInputType.visiblePassword,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(17),
+                      CedulaInputFormatter(),
+                    ],
+                  ),
+                  _buildField(
+                    label: 'Correo electrónico',
+                    controller: _viewModel.emailController,
+                    icon: Icons.email,
+                    hint: 'Ingrese su correo',
+                    errorListenable: _viewModel.emailError,
+                    inputType: TextInputType.emailAddress,
+                  ),
+                  _buildField(
+                    label: 'Contraseña',
+                    controller: _viewModel.passwordController,
+                    icon: Icons.lock,
+                    hint: 'Ingrese su contraseña',
+                    errorListenable: _viewModel.passwordError,
+                    isPassword: true,
+                    obscureText: _obscurePassword,
+                    toggleVisibility: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ValueListenableBuilder<String?>(
+                    valueListenable: _viewModel.errorMessage,
+                    builder: (_, message, __) {
+                      if (message == null) return const SizedBox.shrink();
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          message,
+                          style: TextStyle(
+                            color: Colors.red[700],
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                      child:
-                          isLoading
-                              ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                              : const Text(
-                                'REGISTRARSE',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
+                      );
+                    },
+                  ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _viewModel.isLoading,
+                    builder: (_, isLoading, __) {
+                      return ElevatedButton(
+                        onPressed:
+                            isLoading
+                                ? null
+                                : () => _viewModel.register(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[700],
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child:
+                            isLoading
+                                ? const CircularProgressIndicator(
                                   color: Colors.white,
+                                )
+                                : const Text(
+                                  'REGISTRARSE',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
 
-                const SizedBox(height: 30),
-              ],
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),

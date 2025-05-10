@@ -4,7 +4,7 @@ import '../../viewmodels/login/unit_dropdown_viewmodel.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/labeled_field.dart';
 import '../../widgets/custom_header.dart';
-import '../../widgets/unit_typeahead.dart'; // Asegúrate que la ruta sea correcta
+import '../../widgets/unit_typeahead.dart'; 
 
 class LoginView extends StatefulWidget {
   final UnitDropdownViewModel unitVM;
@@ -136,6 +136,11 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[50],
+      appBar: const CustomHeader(
+        title: 'ReportNic',
+        logoPath: 'assets/images/logo_blanco.png', 
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: GestureDetector(
           onTap: () {
@@ -163,8 +168,7 @@ class _LoginViewState extends State<LoginView> {
                               ? const NeverScrollableScrollPhysics()
                               : const BouncingScrollPhysics(),
                       children: [
-                        CustomHeader(),
-                        const SizedBox(height: 50),
+                        const SizedBox(height: 45),
                         Text(
                           'Inicio de Sesión',
                           textAlign: TextAlign.center,
@@ -372,8 +376,7 @@ class _LoginViewState extends State<LoginView> {
                     if (mounted) {
                       setState(() => _isLoading = false);
                     }
-                  } else {
-                  }
+                  } else {}
                 },
         child: SizedBox(
           height: 20,

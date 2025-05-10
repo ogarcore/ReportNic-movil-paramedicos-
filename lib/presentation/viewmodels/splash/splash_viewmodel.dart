@@ -15,7 +15,7 @@ class SplashViewModel {
     await unitVM.fetchUnidades();
 
     // Delay de splash
-    await Future.delayed(const Duration(milliseconds: 1600));
+    await Future.delayed(const Duration(milliseconds: 1200));
 
     // 🔍 **Verificar si hay un usuario autenticado**
     User? currentUser = FirebaseAuth.instance.currentUser;

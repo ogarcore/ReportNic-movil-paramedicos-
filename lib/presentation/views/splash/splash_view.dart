@@ -8,7 +8,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView>
-    with TickerProviderStateMixin {  // Cambiado a TickerProviderStateMixin
+    with TickerProviderStateMixin {
   final SplashViewModel viewModel = SplashViewModel();
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
@@ -31,15 +31,15 @@ class _SplashViewState extends State<SplashView>
     // Controlador para Lottie
     _lottieController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 5200 ),
+      duration: Duration(milliseconds: 5200),
     );
 
     _scaleController.forward();
     _lottieController.repeat();
 
-    Future.delayed(Duration(milliseconds: 1800), () {
+    Future.delayed(Duration(milliseconds: 1000), () {
+      // Navegación sin animación
       viewModel.loadAndNavigate(context);
-
     });
   }
 
