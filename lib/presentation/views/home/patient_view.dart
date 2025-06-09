@@ -13,9 +13,11 @@ class _PatientViewState extends State<PatientView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _heartRateController = TextEditingController();
-  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _bloodPressureSystolicController =
+      TextEditingController();
+  final TextEditingController _bloodPressureDiastolicController =
+      TextEditingController();
   final TextEditingController _temperatureController = TextEditingController();
-  final TextEditingController _respiratoryRateController = TextEditingController();
   final TextEditingController _affectationsController = TextEditingController();
 
   // Variables para los selectores
@@ -27,14 +29,19 @@ class _PatientViewState extends State<PatientView> {
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _ageFocus = FocusNode();
   final FocusNode _heartRateFocus = FocusNode();
-  final FocusNode _bloodPressureFocus = FocusNode();
+  final FocusNode _bloodPressureSystolicFocus = FocusNode();
+  final FocusNode _bloodPressureDiastolicFocus = FocusNode();
   final FocusNode _temperatureFocus = FocusNode();
-  final FocusNode _respiratoryRateFocus = FocusNode();
   final FocusNode _affectationsFocus = FocusNode();
 
   // Opciones para los Dropdowns
   final List<String> _genders = ['Masculino', 'Femenino', 'Otro'];
-  final List<String> _consciousnessLevels = ['Alerta', 'Verbal', 'Dolor', 'Inconsciente'];
+  final List<String> _consciousnessLevels = [
+    'Alerta',
+    'Verbal',
+    'Dolor',
+    'Inconsciente',
+  ];
 
   @override
   void dispose() {
@@ -42,9 +49,9 @@ class _PatientViewState extends State<PatientView> {
     _nameFocus.dispose();
     _ageFocus.dispose();
     _heartRateFocus.dispose();
-    _bloodPressureFocus.dispose();
+    _bloodPressureSystolicFocus.dispose();
+    _bloodPressureDiastolicFocus.dispose();
     _temperatureFocus.dispose();
-    _respiratoryRateFocus.dispose();
     _affectationsFocus.dispose();
     super.dispose();
   }
@@ -182,9 +189,10 @@ class _PatientViewState extends State<PatientView> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _isEmergency
-                                        ? Colors.red[400]
-                                        : Colors.white.withOpacity(0.2),
+                                    color:
+                                        _isEmergency
+                                            ? Colors.red[400]
+                                            : Colors.white.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Row(
@@ -260,16 +268,26 @@ class _PatientViewState extends State<PatientView> {
                       ),
                       child: DropdownButton<String>(
                         value: _gender,
-                        hint: Text('Sexo', style: TextStyle(color: Colors.grey[600])),
-                        icon: Icon(Icons.arrow_drop_down_rounded, color: Colors.blue[800]),
+                        hint: Text(
+                          'Sexo',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                        icon: Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: Colors.blue[800],
+                        ),
                         isExpanded: true,
                         underline: const SizedBox(),
-                        items: _genders.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value, style: TextStyle(color: Colors.grey[800])),
-                          );
-                        }).toList(),
+                        items:
+                            _genders.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                              );
+                            }).toList(),
                         onChanged: (value) {
                           setState(() {
                             _gender = value;
@@ -324,64 +342,6 @@ class _PatientViewState extends State<PatientView> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, bottom: 4),
                           child: Text(
-                            'Frec. Respiratoria',
-                            style: TextStyle(
-                              color: Colors.blue[800],
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        _buildModernTextField(
-                          controller: _respiratoryRateController,
-                          focusNode: _respiratoryRateFocus,
-                          label: 'Ingrese valor',
-                          icon: Icons.air_rounded,
-                          suffixText: 'rpm',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-                          child: Text(
-                            'Presión Arterial',
-                            style: TextStyle(
-                              color: Colors.blue[800],
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        _buildModernTextField(
-                          controller: _bloodPressureController,
-                          focusNode: _bloodPressureFocus,
-                          label: 'Ingrese valor',
-                          icon: Icons.monitor_heart_outlined,
-                          suffixText: 'mmHg',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-                          child: Text(
                             'Temperatura',
                             style: TextStyle(
                               color: Colors.blue[800],
@@ -397,6 +357,155 @@ class _PatientViewState extends State<PatientView> {
                           icon: Icons.thermostat_outlined,
                           suffixText: '°C',
                           keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              // Sección de presión arterial con diseño especial
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, bottom: 8),
+                    child: Text(
+                      'Presión Arterial',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Sistólica',
+                                style: TextStyle(
+                                  color: Colors.blue[800],
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                width: 70,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.blue[600]!,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _bloodPressureSystolicController,
+                                  focusNode: _bloodPressureSystolicFocus,
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  style: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: '120',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            '/',
+                            style: TextStyle(
+                              color: Colors.blue[800],
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Diastólica',
+                                style: TextStyle(
+                                  color: Colors.blue[800],
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                width: 70,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.blue[600]!,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _bloodPressureDiastolicController,
+                                  focusNode: _bloodPressureDiastolicFocus,
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  style: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: '80',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'mmHg',
+                          style: TextStyle(
+                            color: Colors.blue[800],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -427,16 +536,26 @@ class _PatientViewState extends State<PatientView> {
                 ),
                 child: DropdownButton<String>(
                   value: _consciousnessLevel,
-                  hint: Text('Seleccione nivel', style: TextStyle(color: Colors.grey[600])),
-                  icon: Icon(Icons.arrow_drop_down_rounded, color: Colors.blue[800]),
+                  hint: Text(
+                    'Seleccione nivel',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  icon: Icon(
+                    Icons.arrow_drop_down_rounded,
+                    color: Colors.blue[800],
+                  ),
                   isExpanded: true,
                   underline: const SizedBox(),
-                  items: _consciousnessLevels.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, style: TextStyle(color: Colors.grey[800])),
-                    );
-                  }).toList(),
+                  items:
+                      _consciousnessLevels.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _consciousnessLevel = value;
@@ -473,54 +592,14 @@ class _PatientViewState extends State<PatientView> {
                     hintText: 'Describa las afectaciones del paciente...',
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(20),
-                    suffixIcon: Icon(Icons.edit_note_rounded, color: Colors.grey[400]),
+                    suffixIcon: Icon(
+                      Icons.edit_note_rounded,
+                      color: Colors.grey[400],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 30),
-
-              // Botones de acción
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        side: BorderSide(color: Colors.blue[800]!),
-                      ),
-                      child: Text(
-                        'CANCELAR',
-                        style: TextStyle(
-                          color: Colors.blue[800],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[800],
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'GUARDAR',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

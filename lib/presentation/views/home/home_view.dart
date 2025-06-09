@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rptn_01/presentation/views/home/patient_view.dart';
+import '../../viewmodels/home/audio_controls_viewmodel.dart';
 import '../../viewmodels/home/home_viewmodel.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../../viewmodels/menu/menu_drawer_viewmodel.dart';
@@ -18,22 +20,12 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final _viewModel = HomeViewModel();
   int _currentIndex = 1;
-    void _onMicPress() {
-  }
-
-  void _onMicRelease() {
-  }
-
-  void _onEdit() {
-  }
-
   void _onSend() {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const PatientView()),
-  );
-}
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PatientView()),
+    );
+  }
 
   void _onTabSelected(int index) {
     setState(() {
@@ -118,12 +110,10 @@ class _HomeViewState extends State<HomeView> {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFE3F2FD),
-        body: AudioControlsWidget(
-        onMicPress: _onMicPress,
-        onMicRelease: _onMicRelease,
-        onEdit: _onEdit,
-        onSend: _onSend,
-      ),
+        body: ChangeNotifierProvider(
+          create: (_) => AudioControlsViewModel()..initSpeech(),
+          child: AudioControlsWidget(),
+        ),
         appBar: const CustomAppBar(
           title: 'ReportNic',
           logoPath: 'assets/images/logo_blanco.png',

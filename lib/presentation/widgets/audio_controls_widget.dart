@@ -1,40 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/home/audio_controls_viewmodel.dart'; // Ajusta el path
 
-class AudioControlsWidget extends StatefulWidget {
-  final VoidCallback onEdit;
-  final VoidCallback onSend;
-  final VoidCallback onMicPress;
-  final VoidCallback onMicRelease;
-
-  const AudioControlsWidget({
-    Key? key,
-    required this.onEdit,
-    required this.onSend,
-    required this.onMicPress,
-    required this.onMicRelease,
-  }) : super(key: key);
-
-  @override
-  _AudioControlsWidgetState createState() => _AudioControlsWidgetState();
-}
-
-class _AudioControlsWidgetState extends State<AudioControlsWidget> {
-  bool _isPressed = false;
+class AudioControlsWidget extends StatelessWidget {
+  const AudioControlsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<AudioControlsViewModel>(context);
+
     return Stack(
       children: [
+        // TEXTO TRANSCRITO
         Positioned(
           top: 125,
           left: 25,
           right: 25,
           child: Center(
-            child: const Text(
-              'Mantén presionado el botón para grabar',
+            child: Text(
+              viewModel.transcribedText,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color.fromARGB(255, 8, 81, 153),
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -43,91 +29,17 @@ class _AudioControlsWidgetState extends State<AudioControlsWidget> {
             ),
           ),
         ),
-        Positioned(
-          bottom: 120,
-          left: 30,
-          right: 30,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Botón de Editar
-                  GestureDetector(
-                    onTap: widget.onEdit,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      width: 60,
-                      height: 60,
-                      margin: const EdgeInsets.only(right: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        gradient: const LinearGradient(
-                          colors: [Colors.white, Colors.white],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(
-                          color: const Color(0xFF0D47A1),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        HugeIcons.strokeRoundedEdit03,
-                        color: Color(0xFF0D47A1),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                  // Botón de Enviar
-                  GestureDetector(
-                    onTap: widget.onSend,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      width: 60,
-                      height: 60,
-                      margin: const EdgeInsets.only(left: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        gradient: const LinearGradient(
-                          colors: [Colors.white, Colors.white],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(
-                          color: const Color(0xFF2E7D32),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        HugeIcons.strokeRoundedNavigation03,
-                        color: Color(0xFF2E7D32),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        // Botón de Micrófono
+
+        // MICRÓFONO
         Positioned(
           bottom: MediaQuery.of(context).size.height * 0.21,
           left: 0,
           right: 0,
           child: Center(
             child: GestureDetector(
-              onTapDown: (_) {
-                setState(() => _isPressed = true);
-                widget.onMicPress();
-              },
-              onTapUp: (_) {
-                setState(() => _isPressed = false);
-                widget.onMicRelease();
-              },
-              onTapCancel: () => setState(() => _isPressed = false),
+              onTapDown: (_) => viewModel.startListening(),
+              onTapUp: (_) => viewModel.stopListening(),
+              onTapCancel: () => viewModel.stopListening(),
               child: Container(
                 width: 180,
                 height: 180,

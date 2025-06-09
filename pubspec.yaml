@@ -7,6 +7,7 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  speech_to_text: ^6.4.1
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.2
@@ -35,6 +36,7 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/keys/stt_key.json
 
 flutter_icons:
   android: true
