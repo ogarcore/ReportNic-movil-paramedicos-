@@ -6,10 +6,10 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool automaticallyImplyLeading;
 
   const CustomHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.automaticallyImplyLeading = false, required this.logoPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

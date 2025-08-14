@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class PatientView extends StatefulWidget {
-  const PatientView({Key? key}) : super(key: key);
+  const PatientView({super.key});
 
   @override
   _PatientViewState createState() => _PatientViewState();

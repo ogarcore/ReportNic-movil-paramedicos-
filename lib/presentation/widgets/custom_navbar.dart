@@ -8,10 +8,10 @@ class CustomNavBar extends StatefulWidget {
   final Function(int) onTabSelected;
 
   const CustomNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTabSelected,
-  }) : super(key: key);
+  });
 
   @override
   _CustomNavBarState createState() => _CustomNavBarState();

@@ -14,7 +14,7 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText; // <-- agregado
   final FocusNode? focusNode;
 
-  const CustomTextField({
+  const CustomTextField({super.key, 
     required this.controller,
     required this.hintText,
     required this.icon,

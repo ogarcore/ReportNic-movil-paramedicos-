@@ -6,6 +6,8 @@ import '../../widgets/custom_text_field.dart';
 import '../../widgets/custom_header.dart';
 
 class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
+
   @override
   _RegisterViewState createState() => _RegisterViewState();
 }

@@ -8,7 +8,7 @@ import '../../widgets/menu_drawer.dart';
 import '../home/home_view.dart';
 
 class ReportView extends StatefulWidget {
-  const ReportView({Key? key}) : super(key: key);
+  const ReportView({super.key});
 
   @override
   State<ReportView> createState() => _ReportViewState();

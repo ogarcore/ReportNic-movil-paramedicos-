@@ -13,7 +13,7 @@ class CustomTextFieldCode extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters; // <-- agregado
   final bool obscureText; // <-- agregado
 
-  const CustomTextFieldCode({
+  const CustomTextFieldCode({super.key, 
     required this.controller,
     required this.hintText,
     required this.icon,

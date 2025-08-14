@@ -9,7 +9,7 @@ import '../../widgets/menu_drawer.dart';
 import '../home/home_view.dart';
 
 class AlertView extends StatefulWidget {
-  const AlertView({Key? key}) : super(key: key);
+  const AlertView({super.key});
 
   @override
   State<AlertView> createState() => _AlertViewState();

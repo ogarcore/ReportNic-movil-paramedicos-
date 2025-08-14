@@ -5,10 +5,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String logoPath;
 
   const CustomAppBar({
-    Key? key,
+    super.key,
     required this.title,
     required this.logoPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

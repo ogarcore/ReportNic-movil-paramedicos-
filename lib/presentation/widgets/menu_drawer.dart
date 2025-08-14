@@ -13,7 +13,7 @@ class MenuDrawer extends StatelessWidget {
   final MenuDrawerViewModel viewModel;
 
   const MenuDrawer({
-    Key? key,
+    super.key,
     required this.onLogout,
     required this.onHome,
     required this.onHistory,
@@ -21,7 +21,7 @@ class MenuDrawer extends StatelessWidget {
     required this.onSettings,
     required this.onHelp,
     required this.viewModel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,8 @@ import 'package:lottie/lottie.dart';
 import '../../viewmodels/splash/splash_viewmodel.dart';
 
 class SplashView extends StatefulWidget {
+  const SplashView({super.key});
+
   @override
   State<SplashView> createState() => _SplashViewState();
 }

@@ -4,7 +4,7 @@ import 'wave_painter.dart';
 class EmergenciesList extends StatelessWidget {
   final List<Map<String, dynamic>> emergencies;
 
-  const EmergenciesList({Key? key, required this.emergencies}) : super(key: key);
+  const EmergenciesList({super.key, required this.emergencies});
 
   @override
   Widget build(BuildContext context) {

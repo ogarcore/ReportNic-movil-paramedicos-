@@ -5,6 +5,8 @@ import '../../widgets/custom_text_field.dart';
 import '../../viewmodels/login/code_register_viewmodel.dart';
 
 class CodigoRegistroView extends StatefulWidget {
+  const CodigoRegistroView({super.key});
+
   @override
   _CodigoRegistroViewState createState() => _CodigoRegistroViewState();
 }

@@ -8,7 +8,7 @@ class LabeledField extends StatelessWidget {
   final bool submitted;
 
 
-  const LabeledField({
+  const LabeledField({super.key, 
     required this.label,
     required this.child,
     required this.validator,
