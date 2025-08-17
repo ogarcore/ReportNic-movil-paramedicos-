@@ -19,11 +19,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final _viewModel = HomeViewModel();
+  final _audioControlsViewModel = AudioControlsViewModel();
   int _currentIndex = 1;
   void _onSend() {
+    // Se obtiene el texto transcrito directamente del ViewModel
+    final String textToSend = _audioControlsViewModel.transcribedText;
+
+    // Se navega a PatientView, pasando el texto como parámetro
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const PatientView()),
+      MaterialPageRoute(
+        builder: (context) => PatientView(transcribedText: textToSend),
+      ),
     );
   }
 
@@ -31,6 +38,20 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializar el servicio de voz cuando el estado se crea
+    _audioControlsViewModel.initSpeech();
+  }
+
+  @override
+  void dispose() {
+    // Liberar los recursos del ViewModel cuando la vista se destruye
+    _audioControlsViewModel.dispose();
+    super.dispose();
   }
 
   @override
@@ -109,10 +130,11 @@ class _HomeViewState extends State<HomeView> {
         return shouldExit ?? false;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: const Color(0xFFE3F2FD),
-        body: ChangeNotifierProvider(
-          create: (_) => AudioControlsViewModel()..initSpeech(),
-          child: AudioControlsWidget(),
+        body: ChangeNotifierProvider.value(
+          value: _audioControlsViewModel,
+          child: AudioControlsWidget(onSend: _onSend),
         ),
         appBar: const CustomAppBar(
           title: 'ReportNic',

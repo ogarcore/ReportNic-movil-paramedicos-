@@ -6,12 +6,19 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 class AudioControlsViewModel extends ChangeNotifier {
   final stt.SpeechToText _speech = stt.SpeechToText();
 
+  // --- NUEVO: Controlador de texto ---
+  // Se manejará aquí para mantener el estado y evitar que se reinicie.
+  final TextEditingController textController = TextEditingController();
+
   bool _isAvailable = false;
   bool _isListening = false;
   bool _isInitializing = false;
+  bool _isEditing = false;
   String _localeId = '';
   String _displayText = 'Toca el botón para grabar';
 
+  // Getters
+  bool get isEditing => _isEditing;
   String get transcribedText => _displayText;
   bool get isListening => _isListening;
   bool get isReady => _isAvailable && !_isInitializing;
@@ -20,10 +27,37 @@ class AudioControlsViewModel extends ChangeNotifier {
     initSpeech();
   }
 
+  // --- NUEVO: Liberar recursos del controlador ---
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
+  // --- MODIFICADO: Sincroniza el controlador al entrar en modo edición ---
+  void toggleEditing() {
+    _isEditing = !_isEditing;
+    if (_isEditing) {
+      // Aseguramos que el texto del controlador sea el actual
+      textController.text = _displayText;
+    }
+    notifyListeners();
+  }
+
+  // --- MODIFICADO: Guarda el texto directamente desde el controlador ---
+  void saveEditedText() {
+    _displayText = textController.text;
+    _isEditing = false;
+    notifyListeners();
+  }
+
+  // --- El resto de los métodos ahora sincronizan el controlador ---
+
   Future<void> initSpeech() async {
     if (_isInitializing || _isAvailable) return;
     _isInitializing = true;
     _displayText = 'Cargando servicio de voz...';
+    textController.text = _displayText; // Sincronizar
     notifyListeners();
 
     try {
@@ -45,6 +79,7 @@ class AudioControlsViewModel extends ChangeNotifier {
       _displayText = 'Error de inicialización. Intenta de nuevo.';
     } finally {
       _isInitializing = false;
+      textController.text = _displayText; // Sincronizar
       notifyListeners();
     }
   }
@@ -53,7 +88,8 @@ class AudioControlsViewModel extends ChangeNotifier {
     if (!isReady || _isListening) return;
 
     _isListening = true;
-    _displayText = 'Grabando...'; // Mostrar mensaje inicial
+    _displayText = 'Grabando...';
+    textController.text = _displayText; // Sincronizar
     notifyListeners();
 
     try {
@@ -62,12 +98,13 @@ class AudioControlsViewModel extends ChangeNotifier {
         localeId: _localeId.isNotEmpty ? _localeId : null,
         listenMode: stt.ListenMode.dictation,
         partialResults: true,
-        pauseFor: const Duration(seconds: 6), // ahora espera 6 segs de silencio
+        pauseFor: const Duration(seconds: 6),
         listenFor: const Duration(minutes: 5),
       );
     } catch (_) {
       _isListening = false;
       _displayText = 'Error de grabación. Intenta de nuevo.';
+      textController.text = _displayText; // Sincronizar
       notifyListeners();
     }
   }
@@ -81,12 +118,8 @@ class AudioControlsViewModel extends ChangeNotifier {
   }
 
   void _onSpeechResult(stt.SpeechRecognitionResult result) {
-    // Si aún está en "Grabando..." y hay texto real, lo reemplaza
-    if (_displayText == 'Grabando...' && result.recognizedWords.isNotEmpty) {
-      _displayText = result.recognizedWords;
-    } else {
-      _displayText = result.recognizedWords;
-    }
+    _displayText = result.recognizedWords;
+    textController.text = _displayText; // Sincronizar
     notifyListeners();
   }
 
@@ -95,6 +128,7 @@ class AudioControlsViewModel extends ChangeNotifier {
       _isListening = false;
       if (_displayText.trim().isEmpty || _displayText == 'Grabando...') {
         _displayText = 'No se ha detectado voz.';
+        textController.text = _displayText; // Sincronizar
       }
       notifyListeners();
     }
@@ -103,6 +137,7 @@ class AudioControlsViewModel extends ChangeNotifier {
   void _onError(stt.SpeechRecognitionError error) {
     _isListening = false;
     _displayText = 'Error de grabación. Intenta de nuevo.';
+    textController.text = _displayText; // Sincronizar
     notifyListeners();
   }
 }

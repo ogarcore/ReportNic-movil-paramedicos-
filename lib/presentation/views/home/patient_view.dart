@@ -1,68 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/home/patient_view_model.dart';
+import '../../widgets/section_header.dart';
+import '../../widgets/modern_text_field.dart';
+import 'map_view.dart';
 
-class PatientView extends StatefulWidget {
-  const PatientView({super.key});
+class PatientView extends StatelessWidget {
+  final String transcribedText;
 
-  @override
-  _PatientViewState createState() => _PatientViewState();
-}
-
-class _PatientViewState extends State<PatientView> {
-  // Controladores para los campos de texto
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _heartRateController = TextEditingController();
-  final TextEditingController _bloodPressureSystolicController =
-      TextEditingController();
-  final TextEditingController _bloodPressureDiastolicController =
-      TextEditingController();
-  final TextEditingController _temperatureController = TextEditingController();
-  final TextEditingController _affectationsController = TextEditingController();
-
-  // Variables para los selectores
-  String? _gender;
-  String? _consciousnessLevel;
-  bool _isEmergency = false;
-
-  // Focus nodes para manejar el enfoque
-  final FocusNode _nameFocus = FocusNode();
-  final FocusNode _ageFocus = FocusNode();
-  final FocusNode _heartRateFocus = FocusNode();
-  final FocusNode _bloodPressureSystolicFocus = FocusNode();
-  final FocusNode _bloodPressureDiastolicFocus = FocusNode();
-  final FocusNode _temperatureFocus = FocusNode();
-  final FocusNode _affectationsFocus = FocusNode();
-
-  // Opciones para los Dropdowns
-  final List<String> _genders = ['Masculino', 'Femenino', 'Otro'];
-  final List<String> _consciousnessLevels = [
-    'Alerta',
-    'Verbal',
-    'Dolor',
-    'Inconsciente',
-  ];
-
-  @override
-  void dispose() {
-    // Limpiar los focus nodes
-    _nameFocus.dispose();
-    _ageFocus.dispose();
-    _heartRateFocus.dispose();
-    _bloodPressureSystolicFocus.dispose();
-    _bloodPressureDiastolicFocus.dispose();
-    _temperatureFocus.dispose();
-    _affectationsFocus.dispose();
-    super.dispose();
-  }
+  const PatientView({super.key, required this.transcribedText});
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => PatientViewModel(transcribedText),
+      child: const _PatientViewBody(),
+    );
+  }
+}
+
+class _PatientViewBody extends StatelessWidget {
+  const _PatientViewBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = Provider.of<PatientViewModel>(context);
+
     return GestureDetector(
-      onTap: () {
-        // Quitar el foco de cualquier campo cuando se toque fuera
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: AppBar(
@@ -86,7 +52,6 @@ class _PatientViewState extends State<PatientView> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              // Tarjeta de información rápida
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -118,7 +83,7 @@ class _PatientViewState extends State<PatientView> {
                           width: 2,
                         ),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.person_rounded,
                         size: 40,
                         color: Colors.white,
@@ -129,17 +94,10 @@ class _PatientViewState extends State<PatientView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Paciente Nuevo',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 14,
-                            ),
-                          ),
                           const SizedBox(height: 5),
-                          Text(
+                          const Text(
                             'Registro en curso',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -148,73 +106,14 @@ class _PatientViewState extends State<PatientView> {
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.access_time_rounded,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      'Ahora',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              _chip(
+                                Icons.calendar_today_rounded,
+                                vm.formattedDate,
                               ),
                               const SizedBox(width: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isEmergency = !_isEmergency;
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        _isEmergency
-                                            ? Colors.red[400]
-                                            : Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.warning_rounded,
-                                        size: 16,
-                                        color: Colors.white,
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        _isEmergency ? 'URGENCIA' : 'Normal',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              _chip(
+                                Icons.access_time_rounded,
+                                vm.formattedTime,
                               ),
                             ],
                           ),
@@ -226,161 +125,211 @@ class _PatientViewState extends State<PatientView> {
               ),
               const SizedBox(height: 25),
 
-              // Sección de datos generales
-              _buildSectionHeader(
+              const SectionHeader(
                 icon: Icons.person_outline_rounded,
                 title: 'Datos Generales',
               ),
               const SizedBox(height: 15),
-              _buildModernTextField(
-                controller: _nameController,
-                focusNode: _nameFocus,
-                label: 'Nombre Completo',
-                icon: Icons.person_rounded,
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: ModernTextField(
+                      controller: vm.nameController,
+                      focusNode: vm.nameFocus,
+                      label: 'Nombre Completo',
+                      icon: Icons.person_rounded,
+                      enabled: !vm.nameUnknown,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: _toggleButton(
+                      label: 'Desconocido',
+                      active: vm.nameUnknown,
+                      onTap: vm.toggleNameUnknown,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 15),
               Row(
                 children: [
                   Expanded(
-                    child: _buildModernTextField(
-                      controller: _ageController,
-                      focusNode: _ageFocus,
+                    flex: 4,
+                    child: ModernTextField(
+                      controller: vm.ageController,
+                      focusNode: vm.ageFocus,
                       label: 'Edad',
                       icon: HugeIcons.strokeRoundedCalendar03,
                       keyboardType: TextInputType.number,
+                      enabled: !vm.ageUnknown,
                     ),
                   ),
-                  const SizedBox(width: 15),
+                  const SizedBox(width: 10),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: DropdownButton<String>(
-                        value: _gender,
-                        hint: Text(
-                          'Sexo',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                        icon: Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: Colors.blue[800],
-                        ),
-                        isExpanded: true,
-                        underline: const SizedBox(),
-                        items:
-                            _genders.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: TextStyle(color: Colors.grey[800]),
-                                ),
-                              );
-                            }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _gender = value;
-                          });
-                        },
-                      ),
+                    flex: 2,
+                    child: _toggleButton(
+                      label: 'Desconocida',
+                      active: vm.ageUnknown,
+                      onTap: vm.toggleAgeUnknown,
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 15),
+              _dropdown(
+                value: vm.gender,
+                hint: 'Sexo',
+                items: vm.genders,
+                onChanged: (val) => vm.gender = val,
               ),
               const SizedBox(height: 25),
 
-              // Sección de signos vitales
-              _buildSectionHeader(
+              const SectionHeader(
                 icon: Icons.favorite_outline_rounded,
                 title: 'Signos Vitales',
               ),
+
               const SizedBox(height: 15),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-                          child: Text(
-                            'Frec. Cardíaca',
-                            style: TextStyle(
-                              color: Colors.blue[800],
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        _buildModernTextField(
-                          controller: _heartRateController,
-                          focusNode: _heartRateFocus,
-                          label: 'Ingrese valor',
-                          icon: HugeIcons.strokeRoundedFavouriteSquare,
-                          suffixText: 'lpm',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 4),
-                          child: Text(
-                            'Temperatura',
-                            style: TextStyle(
-                              color: Colors.blue[800],
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        _buildModernTextField(
-                          controller: _temperatureController,
-                          focusNode: _temperatureFocus,
-                          label: 'Ingrese valor',
-                          icon: Icons.thermostat_outlined,
-                          suffixText: '°C',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              // Sección de presión arterial con diseño especial
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                    child: Text(
-                      'Presión Arterial',
-                      style: TextStyle(
-                        color: Colors.blue[800],
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                                bottom: 4.0,
+                              ),
+                              child: Text(
+                                'Frec. Cardíaca',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                controller: vm.heartRateController,
+                                focusNode: vm.heartRateFocus,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '72',
+                                  hintStyle: TextStyle(color: Colors.grey[500]),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 18,
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.monitor_heart_outlined,
+                                    color: Color(0xFF1565C0),
+                                  ),
+                                  suffixText: 'lpm',
+                                  suffixStyle: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                                bottom: 4.0,
+                              ),
+                              child: Text(
+                                'Temperatura',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                controller: vm.temperatureController,
+                                focusNode: vm.temperatureFocus,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '36.5',
+                                  hintStyle: TextStyle(color: Colors.grey[500]),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 18,
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.thermostat_outlined,
+                                    color: Color(0xFF1565C0),
+                                  ),
+                                  suffixText: '°C',
+                                  suffixStyle: TextStyle(
+                                    color: Colors.blue[800],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Presión Arterial",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[800],
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
@@ -393,180 +342,138 @@ class _PatientViewState extends State<PatientView> {
                         ),
                       ],
                     ),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Sistólica',
-                                style: TextStyle(
-                                  color: Colors.blue[800],
-                                  fontSize: 13,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Container(
-                                width: 70,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[50],
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.blue[600]!,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _bloodPressureSystolicController,
-                                  focusNode: _bloodPressureSystolicFocus,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Sistólica
+                            Column(
+                              children: [
+                                Text(
+                                  "Sistólica",
                                   style: TextStyle(
+                                    fontSize: 14,
                                     color: Colors.blue[800],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
                                   ),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: '120',
-                                    hintStyle: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontSize: 14,
+                                ),
+                                const SizedBox(height: 5),
+                                Container(
+                                  width: 100,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: TextField(
+                                    controller:
+                                        vm.bloodPressureSystolicController,
+                                    focusNode: vm.bloodPressureSystolicFocus,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    style: TextStyle(
+                                      color: Colors.blue[800],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "120",
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey[500],
+                                      ),
+                                      border: InputBorder.none,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            '/',
-                            style: TextStyle(
-                              color: Colors.blue[800],
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                              ],
                             ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Diastólica',
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                "/",
                                 style: TextStyle(
-                                  color: Colors.blue[800],
-                                  fontSize: 13,
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 63, 100, 201),
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Container(
-                                width: 70,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[50],
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.blue[600]!,
-                                    width: 1.5,
+                            ),
+                            // Diastólica
+                            Column(
+                              children: [
+                                Text(
+                                  "Diastólica",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blue[800],
                                   ),
                                 ),
-                                child: TextField(
-                                  controller: _bloodPressureDiastolicController,
-                                  focusNode: _bloodPressureDiastolicFocus,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  style: TextStyle(
-                                    color: Colors.blue[800],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                const SizedBox(height: 5),
+                                Container(
+                                  width: 100,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
                                   ),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: '80',
-                                    hintStyle: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontSize: 14,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: TextField(
+                                    controller:
+                                        vm.bloodPressureDiastolicController,
+                                    focusNode: vm.bloodPressureDiastolicFocus,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    style: TextStyle(
+                                      color: Colors.blue[800],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "80",
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey[500],
+                                      ),
+                                      border: InputBorder.none,
                                     ),
                                   ),
                                 ),
+                              ],
+                            ),
+                            const SizedBox(width: 10),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Text(
+                                "mmHg",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[800],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'mmHg',
-                          style: TextStyle(
-                            color: Colors.blue[800],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
 
-              // Sección de nivel de conciencia
-              _buildSectionHeader(
+              const SectionHeader(
                 icon: Icons.psychology_outlined,
                 title: 'Nivel de Conciencia (AVPU)',
               ),
               const SizedBox(height: 15),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: DropdownButton<String>(
-                  value: _consciousnessLevel,
-                  hint: Text(
-                    'Seleccione nivel',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                  icon: Icon(
-                    Icons.arrow_drop_down_rounded,
-                    color: Colors.blue[800],
-                  ),
-                  isExpanded: true,
-                  underline: const SizedBox(),
-                  items:
-                      _consciousnessLevels.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: TextStyle(color: Colors.grey[800]),
-                          ),
-                        );
-                      }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _consciousnessLevel = value;
-                    });
-                  },
-                ),
+              _dropdown(
+                value: vm.consciousnessLevel,
+                hint: 'Seleccione nivel',
+                items: vm.consciousnessLevels,
+                onChanged: (val) => vm.consciousnessLevel = val,
               ),
               const SizedBox(height: 25),
 
-              // Sección de afectaciones
-              _buildSectionHeader(
+              const SectionHeader(
                 icon: Icons.medical_services_outlined,
                 title: 'Afectaciones',
               ),
@@ -585,11 +492,11 @@ class _PatientViewState extends State<PatientView> {
                   ],
                 ),
                 child: TextField(
-                  controller: _affectationsController,
-                  focusNode: _affectationsFocus,
+                  controller: vm.affectationsController,
+                  focusNode: vm.affectationsFocus,
+                  readOnly: true,
                   maxLines: 5,
                   decoration: InputDecoration(
-                    hintText: 'Describa las afectaciones del paciente...',
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(20),
                     suffixIcon: Icon(
@@ -600,6 +507,58 @@ class _PatientViewState extends State<PatientView> {
                 ),
               ),
               const SizedBox(height: 30),
+
+              Container(
+                width: double.infinity,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.blue[800]!, Colors.blue[600]!],
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MapView(),
+                        ),
+                      );
+                    },
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.map_rounded, color: Colors.white),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Ver en Mapa',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -607,40 +566,74 @@ class _PatientViewState extends State<PatientView> {
     );
   }
 
-  Widget _buildSectionHeader({required IconData icon, required String title}) {
-    return Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.blue[100],
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.blue[800], size: 20),
-        ),
-        const SizedBox(width: 15),
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.blue[800],
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+  Widget _chip(IconData icon, String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.white),
+          const SizedBox(width: 5),
+          Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
+        ],
+      ),
     );
   }
 
-  Widget _buildModernTextField({
-    required TextEditingController controller,
-    required FocusNode focusNode,
+  Widget _toggleButton({
     required String label,
-    required IconData icon,
-    String? suffixText,
-    TextInputType keyboardType = TextInputType.text,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: active ? Colors.blue[800] : Colors.blue[50],
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: active ? Colors.blue[800]! : Colors.blue[100]!,
+            width: 1.5,
+          ),
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: active ? Colors.white : Colors.blue[800],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                active ? Icons.check : Icons.question_mark,
+                size: 16,
+                color: active ? Colors.white : Colors.blue[800],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dropdown({
+    required String? value,
+    required String hint,
+    required List<String> items,
+    required Function(String?) onChanged,
   }) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -653,25 +646,20 @@ class _PatientViewState extends State<PatientView> {
           ),
         ],
       ),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.grey[600]),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 18,
-          ),
-          prefixIcon: Icon(icon, color: Colors.blue[800]),
-          suffixText: suffixText,
-          suffixStyle: TextStyle(
-            color: Colors.grey[600],
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      child: DropdownButton<String>(
+        value: value,
+        hint: Text(hint, style: TextStyle(color: Colors.grey[600])),
+        icon: Icon(Icons.arrow_drop_down_rounded, color: Colors.blue[800]),
+        isExpanded: true,
+        underline: const SizedBox(),
+        items:
+            items.map((String val) {
+              return DropdownMenuItem<String>(
+                value: val,
+                child: Text(val, style: TextStyle(color: Colors.grey[800])),
+              );
+            }).toList(),
+        onChanged: onChanged,
       ),
     );
   }
