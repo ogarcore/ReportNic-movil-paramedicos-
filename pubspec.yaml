@@ -40,6 +40,7 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/mapStyle/
 
 flutter_icons:
   android: true
