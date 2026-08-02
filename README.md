@@ -33,4 +33,4 @@ This repository is currently **Archived / Inactive**.
 It remains available as a demonstration of mobile UI/UX prototyping, architecture planning, and rapid development methodologies applied during a hackathon. The main project direction was later shifted, and this specific mobile module was paused.
 
 ---
-*Developed by Oliver García as part of the Hackathon Nicaragua 2024 experience.*
+*Developed by Oliver García as part of the Hackathon Nicaragua 2025 experience.*
